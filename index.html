@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impact Analyzer</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Service Request Impact Analyzer</h1>
+        <div class="controls">
+            <div class="date-controls">
+                <div class="range-slider">
+                    <input type="range" id="startDate" class="slider" min="0" max="365" value="0">
+                    <input type="range" id="endDate" class="slider" min="0" max="365" value="365">
+                    <div class="slider-track"></div>
+                </div>
+                <div class="date-labels">
+                    <span id="startLabel">Start Date</span>
+                    <span id="endLabel">End Date</span>
+                </div>
+            </div>
+            <button id="playButton" class="play-btn">▶ Play</button>
+        </div>
+        <div class="chart-container">
+            <svg id="chart"></svg>
+            <div class="tooltip" id="tooltip"></div>
+        </div>
+    </div>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

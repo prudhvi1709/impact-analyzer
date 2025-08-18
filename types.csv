@@ -1,0 +1,111 @@
+Category,Subcategory,Effort_Per_Issue,Impact_Per_Day
+Quick Wins,Password Policy Automation,5000,85000
+Quick Wins,Self-Service Portal Implementation,8000,95000
+Quick Wins,Automated Backup Monitoring,3500,75000
+Quick Wins,Database Connection Pooling,6500,120000
+Quick Wins,Load Balancer Health Checks,4200,88000
+Quick Wins,Certificate Expiration Alerts,2800,65000
+Quick Wins,Log Rotation Automation,3200,58000
+Quick Wins,Basic Security Patch Automation,7500,135000
+Quick Wins,Email Queue Monitoring,2900,72000
+Quick Wins,API Rate Limiting Implementation,5800,98000
+Quick Wins,Memory Usage Alert Thresholds,3800,68000
+Quick Wins,Network Bandwidth Monitoring,4600,82000
+Quick Wins,Service Health Dashboard,9200,155000
+Quick Wins,Automated Error Log Analysis,6800,108000
+Quick Wins,Basic Firewall Rule Optimization,4900,89000
+Major Projects,Enterprise Data Warehouse Migration,285000,420000
+Major Projects,Legacy System Complete Modernization,450000,380000
+Major Projects,Multi-Site Disaster Recovery Implementation,520000,650000
+Major Projects,Zero-Trust Security Architecture,380000,590000
+Major Projects,Complete Cloud Infrastructure Migration,325000,480000
+Major Projects,ERP System Total Overhaul,650000,720000
+Major Projects,Customer Data Platform Integration,240000,395000
+Major Projects,Enterprise AI/ML Platform Development,385000,470000
+Major Projects,Global Network Infrastructure Redesign,480000,585000
+Major Projects,Regulatory Compliance System Overhaul,220000,340000
+Major Projects,Enterprise Identity Management Platform,275000,405000
+Major Projects,Real-time Analytics Platform Development,290000,385000
+Major Projects,Mobile-First Application Complete Redesign,185000,255000
+Major Projects,DevSecOps Pipeline Complete Implementation,160000,240000
+Major Projects,Enterprise Content Management Overhaul,255000,325000
+Fill-ins,Email Signature Template Updates,150,1200
+Fill-ins,Desktop Wallpaper Standardization,95,850
+Fill-ins,Printer Toner Replacement Scheduling,120,950
+Fill-ins,Basic Hardware Inventory Updates,180,1400
+Fill-ins,Simple Form Template Updates,110,890
+Fill-ins,Meeting Room Equipment Basic Maintenance,145,1150
+Fill-ins,Wi-Fi Password Distribution Updates,85,720
+Fill-ins,Basic Documentation Formatting,220,1650
+Fill-ins,Simple Report Template Updates,165,1280
+Fill-ins,Equipment Asset Tag Updates,135,1050
+Fill-ins,Basic System Configuration Backups,200,1580
+Fill-ins,Simple Calendar Template Updates,95,780
+Fill-ins,Basic File Organization Tasks,175,1350
+Fill-ins,Equipment Cable Management,120,950
+Fill-ins,Simple User Guide Updates,190,1480
+Thankless Tasks,Legacy Report Format Manual Conversions,85000,8500
+Thankless Tasks,Custom Data Migration Script Maintenance,95000,6200
+Thankless Tasks,Proprietary System Manual Integration,75000,4800
+Thankless Tasks,Legacy Database Manual Optimization,125000,7200
+Thankless Tasks,Outdated System Manual Documentation,65000,3900
+Thankless Tasks,Manual Testing Process Maintenance,72000,5100
+Thankless Tasks,Vendor-Specific Manual Customizations,98000,6800
+Thankless Tasks,Legacy Code Manual Refactoring,88000,5500
+Thankless Tasks,Manual Backup Process Maintenance,58000,3400
+Thankless Tasks,Custom Manual Reporting Procedures,78000,4600
+Thankless Tasks,Legacy Interface Manual Updates,82000,5200
+Thankless Tasks,Complex Manual Data Reconciliation,108000,7800
+Thankless Tasks,Legacy Platform Manual Upgrades,135000,8200
+Thankless Tasks,Manual Quality Assurance Procedures,68000,4100
+Thankless Tasks,Outdated Manual Process Documentation,55000,3200
+Critical Infrastructure,Data Center Complete Power Failure,35000,850000
+Critical Infrastructure,Core Database Total Corruption,48000,950000
+Critical Infrastructure,Network Backbone Complete Outage,42000,1200000
+Critical Infrastructure,Primary Payment System Total Failure,65000,1650000
+Critical Infrastructure,Major Security Breach Response,180000,2200000
+Critical Infrastructure,Disaster Recovery Complete Activation,85000,1350000
+Critical Infrastructure,Load Balancer Infrastructure Failure,28000,780000
+Critical Infrastructure,DNS Infrastructure Complete Compromise,38000,690000
+Critical Infrastructure,Main Application Server Farm Crash,32000,820000
+Critical Infrastructure,Storage Infrastructure Complete Failure,75000,1180000
+Executive Support,C-Suite Technology Access Issues,4500,125000
+Executive Support,Board Meeting Technology Setup,5800,98000
+Executive Support,Executive Dashboard Critical Problems,4200,152000
+Executive Support,Strategic Reporting System Failures,6500,168000
+Executive Support,Executive Communication Platform Issues,3900,118000
+Executive Support,Leadership Portal Access Problems,3200,89000
+Executive Support,Executive Travel System Critical Issues,2800,72000
+Executive Support,Board Room AV System Failures,2400,58000
+Executive Support,Executive Assistant Technology Problems,3500,95000
+Executive Support,Strategic Planning Platform Critical Issues,5200,142000
+Business Operations,Payroll Processing System Failures,15000,280000
+Business Operations,Benefits Administration Critical Issues,12000,185000
+Business Operations,Invoice Processing System Problems,8500,145000
+Business Operations,Purchase Order System Critical Failures,9200,165000
+Business Operations,Vendor Payment Processing Issues,11000,195000
+Business Operations,Contract Management System Problems,7800,125000
+Business Operations,Expense Management Critical Issues,6500,108000
+Business Operations,Travel Booking System Major Problems,5200,85000
+Business Operations,Asset Management System Issues,4800,78000
+Business Operations,Facilities Management Critical Problems,6200,102000
+User Support High,Sales Team Critical CRM Access Issues,2800,45000
+User Support High,Finance Team System Access Problems,3200,52000
+User Support High,Customer Service Critical Tool Failures,2650,48000
+User Support High,Production Team System Down Issues,3500,58000
+User Support High,Remote Access Critical VPN Problems,2200,38000
+User Support High,Executive Assistant Critical Tool Issues,2950,42000
+User Support High,Department Manager System Access Issues,2400,35000
+User Support High,Critical Project Team Tool Failures,3100,46000
+User Support High,Key Client Presentation System Issues,2750,51000
+User Support High,Revenue Team Critical System Problems,3400,55000
+User Support Standard,Password Reset Requests,85,250
+User Support Standard,Software Installation Basic Help,125,420
+User Support Standard,Email Configuration Standard Support,95,380
+User Support Standard,Printer Setup Basic Assistance,105,340
+User Support Standard,VPN Connection Standard Help,135,480
+User Support Standard,File Access Standard Permission Issues,78,290
+User Support Standard,Phone System Basic Setup,148,520
+User Support Standard,Mobile Device Standard Configuration,165,580
+User Support Standard,Account Creation Standard Requests,65,220
+User Support Standard,Basic Training Standard Sessions,220,750
