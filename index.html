@@ -3,33 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Impact Analyzer</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Service Desk Impact Analysis</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button.active {
+            background: #28a745;
+        }
+        select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .chart-container {
+            position: relative;
+        }
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            max-width: 300px;
+            z-index: 1000;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            cursor: pointer;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+        .legend-item:hover {
+            opacity: 0.7;
+        }
+        .legend-item.inactive {
+            opacity: 0.3;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .axis-label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .chart-title {
+            font-size: 16px;
+            font-weight: bold;
+            text-anchor: middle;
+        }
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .info-panel {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .severity-legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .severity-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Service Request Impact Analyzer</h1>
-        <div class="controls">
-            <div class="date-controls">
-                <div class="range-slider">
-                    <input type="range" id="startDate" class="slider" min="0" max="365" value="0">
-                    <input type="range" id="endDate" class="slider" min="0" max="365" value="365">
-                    <div class="slider-track"></div>
-                </div>
-                <div class="date-labels">
-                    <span id="startLabel">Start Date</span>
-                    <span id="endLabel">End Date</span>
-                </div>
-            </div>
-            <button id="playButton" class="play-btn">▶ Play</button>
+        <h1>Service Desk Impact Analysis - Multi-Sheet Data</h1>
+        
+        <div class="info-panel">
+            <strong>Data Source:</strong> Real data from service-desk-summary.xlsx (264 categories analyzed)
+            <br><strong>Visualization:</strong> Interactive bubble chart showing business impact vs resolution time
+            <br><strong>Methodology:</strong> Low=$200/day, Medium=$1,000/day, High=$5,000/day impact tiers
         </div>
+
+        <div class="controls">
+            <button onclick="generateData()" id="generateBtn">Refresh Real Data</button>
+            <select id="dataMode" onchange="updateDataMode()">
+                <option value="real" selected>Real Excel Data</option>
+                <option value="synthetic">Synthetic Data (matching distribution)</option>
+                <option value="enhanced">Enhanced Realistic Data</option>
+            </select>
+            <select id="sampleSize" onchange="updateSampleSize()">
+                <option value="50">50 samples</option>
+                <option value="100" selected>100 samples</option>
+                <option value="200">200 samples</option>
+                <option value="500">500 samples</option>
+            </select>
+            <span>Current: <strong id="currentSampleSize">100</strong> data points</span>
+        </div>
+
+        <div class="stats-panel" id="statsPanel"></div>
+
+        <div class="severity-legend">
+            <div class="severity-item">
+                <div style="width: 12px; height: 12px; background: #dc3545; border-radius: 50%;"></div>
+                <span>High Impact ($5,000/day)</span>
+            </div>
+            <div class="severity-item">
+                <div style="width: 12px; height: 12px; background: #ffc107; border-radius: 50%;"></div>
+                <span>Medium Impact ($1,000/day)</span>
+            </div>
+            <div class="severity-item">
+                <div style="width: 12px; height: 12px; background: #28a745; border-radius: 50%;"></div>
+                <span>Low Impact ($200/day)</span>
+            </div>
+        </div>
+
         <div class="chart-container">
             <svg id="chart"></svg>
             <div class="tooltip" id="tooltip"></div>
         </div>
+        
+        <div class="legend" id="legend"></div>
     </div>
-    <script src="data.js"></script>
-    <script src="app.js"></script>
+    <script src="script.js" type="module"></script>
 </body>
 </html>
