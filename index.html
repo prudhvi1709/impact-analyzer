@@ -56,16 +56,19 @@
         }
         .tooltip {
             position: absolute;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             color: white;
             padding: 12px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 12px;
             pointer-events: none;
             opacity: 0;
-            transition: opacity 0.3s;
-            max-width: 300px;
-            z-index: 1000;
+            transition: opacity 0.2s ease;
+            max-width: 320px;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            line-height: 1.4;
         }
         .legend {
             display: flex;
@@ -151,12 +154,10 @@
 </head>
 <body>
     <div class="container">
-        <h1>Service Desk Impact Analysis - Multi-Sheet Data</h1>
+        <h1><!-- Title will be dynamically loaded from config.json --></h1>
         
         <div class="info-panel">
-            <strong>Data Source:</strong> Real data from service-desk-summary.xlsx (264 categories analyzed)
-            <br><strong>Visualization:</strong> Interactive bubble chart showing business impact vs resolution time
-            <br><strong>Methodology:</strong> Low=$200/day, Medium=$1,000/day, High=$5,000/day impact tiers
+            <!-- Content will be dynamically loaded from config.json -->
         </div>
 
         <div class="controls">
@@ -178,18 +179,7 @@
         <div class="stats-panel" id="statsPanel"></div>
 
         <div class="severity-legend">
-            <div class="severity-item">
-                <div style="width: 12px; height: 12px; background: #dc3545; border-radius: 50%;"></div>
-                <span>High Impact ($5,000/day)</span>
-            </div>
-            <div class="severity-item">
-                <div style="width: 12px; height: 12px; background: #ffc107; border-radius: 50%;"></div>
-                <span>Medium Impact ($1,000/day)</span>
-            </div>
-            <div class="severity-item">
-                <div style="width: 12px; height: 12px; background: #28a745; border-radius: 50%;"></div>
-                <span>Low Impact ($200/day)</span>
-            </div>
+            <!-- Content will be dynamically loaded from config.json -->
         </div>
 
         <div class="chart-container">

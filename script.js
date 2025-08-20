@@ -1,96 +1,39 @@
-// Configuration
-const margin = { top: 60, right: 80, bottom: 80, left: 120 };
-const width = 1200 - margin.left - margin.right;
-const height = 700 - margin.top - margin.bottom;
-
-// Color scale for categories
-const colorScale = d3.scaleOrdinal(d3.schemeSet3);
-
-// Severity color mapping
-const severityColors = {
-  High: "#dc3545",
-  Medium: "#ffc107",
-  Low: "#28a745",
-};
-
-// Distribution parameters from actual data analysis
-const issuesDistribution = {
-  min: 1,
-  max: 8099,
-  mean: 467.72,
-  median: 62,
-  std: 1029.89,
-  percentiles: {
-    10: 1.6,
-    25: 7,
-    50: 62,
-    75: 330,
-    90: 1612.6,
-    95: 2735,
-    99: 4381.88,
-  },
-};
-
-// Enhanced categories from all sheets
-const categories = [
-  "Software Service",
-  "Hardware",
-  "Network Services",
-  "Security Services",
-  "Email Services",
-  "Server Services",
-  "Login Issue",
-  "SAP",
-  "Data Services",
-  "Mobile Services",
-  "Account Management",
-  "Change Request",
-  "DevOps Automation",
-  "LM Admin Service Desk",
-  "LM InfoWeb Helpdesk",
-  "Hardware Asset Allocation",
-  "Telephony",
-  "Others",
-  "PMS",
-  "Corporate Support",
-  "AAAS Services",
-  "ACCOPS",
-  "Concur Concerns",
-  "Darwin Box Concern",
-  "FMS Support",
-  "LLM Foundry",
-  "LM Back Up and Restore",
-  "LM CCA",
-  "LM Common Request",
-  "LM Computers",
-  "LM Hybrid Working",
-  "LM ISMS Incident",
-  "LM Onboarding",
-  "LM Printer and Scanner",
-  "Prohance",
-  "S/4 HANA",
-  "Soc",
-  "Springer Nature Bflux",
-  "TechSol",
-  "WFH",
-];
-
-// Severity tiers and their probabilities
-const severityTiers = [
-  { severity: "Low", dailyImpact: 200, probability: 0.6 },
-  { severity: "Medium", dailyImpact: 1000, probability: 0.3 },
-  { severity: "High", dailyImpact: 5000, probability: 0.1 },
-];
+// Global configuration variables - loaded from config.json
+let config = null;
+let margin, width, height, colorScale, severityColors, issuesDistribution, categories, severityTiers;
 
 let currentData = [];
 let realData = null;
 let filteredCategories = new Set();
 let currentDataMode = "real";
 
+// Load configuration from config.json
+async function loadConfiguration() {
+  try {
+    const response = await fetch('config.json');
+    config = await response.json();
+    
+    // Initialize variables from config
+    margin = config.chart.margin;
+    width = config.chart.width - margin.left - margin.right;
+    height = config.chart.height - margin.top - margin.bottom;
+    colorScale = d3.scaleOrdinal(d3[config.chart.colors.scheme]);
+    severityColors = config.chart.colors.severity;
+    issuesDistribution = config.issuesDistribution;
+    categories = config.defaultCategories;
+    severityTiers = config.severityTiers;
+    
+    return config;
+  } catch (error) {
+    console.error('Error loading configuration:', error);
+    throw error;
+  }
+}
+
 // Load real Excel data
 async function loadRealData() {
   try {
-    const response = await fetch('excel_data.json');
+    const response = await fetch(config.dataSource.fileName);
     const data = await response.json();
     realData = data;
     return data;
@@ -167,8 +110,13 @@ function generateSyntheticData() {
   const sampleSize = parseInt(document.getElementById("sampleSize").value);
   const data = [];
 
+  // Get categories from real data if available, otherwise use config defaults
+  const availableCategories = realData && realData.Summary 
+    ? [...new Set(realData.Summary.map(item => item.category).filter(Boolean))]
+    : categories;
+
   for (let i = 0; i < sampleSize; i++) {
-    const category = categories[Math.floor(Math.random() * categories.length)];
+    const category = availableCategories[Math.floor(Math.random() * availableCategories.length)];
     const numIssues = generateSyntheticIssues();
 
     // Determine severity based on probability
@@ -333,6 +281,35 @@ function createChart(data) {
   // Bubbles
   const tooltip = d3.select("#tooltip");
 
+  // Function to position tooltip within screen bounds
+  function positionTooltip(event, tooltipElement) {
+    const tooltipRect = tooltipElement.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    
+    let left = event.pageX + 10;
+    let top = event.pageY - tooltipRect.height - 10; // Position above cursor by default
+    
+    // Adjust horizontal position if tooltip would go off-screen
+    if (left + tooltipRect.width > viewportWidth + scrollLeft) {
+      left = event.pageX - tooltipRect.width - 10;
+    }
+    
+    // Adjust vertical position if tooltip would go above viewport
+    if (top < scrollTop) {
+      top = event.pageY + 10; // Position below cursor instead
+    }
+    
+    // Final check: if still going off bottom of screen, position above
+    if (top + tooltipRect.height > viewportHeight + scrollTop) {
+      top = event.pageY - tooltipRect.height - 10;
+    }
+    
+    return { left, top };
+  }
+
   g.selectAll(".bubble")
     .data(data)
     .enter()
@@ -354,27 +331,44 @@ function createChart(data) {
     .attr("stroke", (d) => severityColors[d.severity])
     .attr("stroke-width", 2)
     .on("mouseover", function (event, d) {
+      // Hide any existing tooltips first (ensure only one tooltip at a time)
+      tooltip.style("opacity", 0);
+      
+      // Reset all other bubbles
+      g.selectAll(".bubble")
+        .attr("opacity", (bubbleD) =>
+          filteredCategories.size === 0 || filteredCategories.has(bubbleD.category)
+            ? 0.7
+            : 0.2
+        )
+        .attr("stroke-width", 2);
+      
+      // Highlight current bubble
       d3.select(this).attr("opacity", 1).attr("stroke-width", 3);
 
+      // Set tooltip content
+      tooltip.html(
+        `
+          <strong>${d.category}</strong><br/>
+          ${d.subCategory ? `<strong>Sub-category:</strong> ${d.subCategory}<br/>` : ''}
+          <strong>Severity:</strong> ${d.severity}<br/>
+          <strong>Issues:</strong> ${d.numIssues.toLocaleString()}<br/>
+          <strong>Business Impact:</strong> $${d.businessImpact.toLocaleString()}/day<br/>
+          <strong>Avg Resolve Time:</strong> ${d.avgResolveTime} hours<br/>
+          <strong>Total Exposure:</strong> $${Math.round(
+            (d.businessImpact * d.avgResolveTime) / 24
+          ).toLocaleString()}
+        `
+      );
+
+      // Position tooltip and show it
+      const tooltipNode = tooltip.node();
+      const position = positionTooltip(event, tooltipNode);
+      
       tooltip
         .style("opacity", 1)
-        .html(
-          `
-                    <strong>${d.category}</strong><br/>
-                    ${d.subCategory ? `<strong>Sub-category:</strong> ${d.subCategory}<br/>` : ''}
-                    <strong>Severity:</strong> ${d.severity}<br/>
-                    <strong>Issues:</strong> ${d.numIssues.toLocaleString()}<br/>
-                    <strong>Business Impact:</strong> $${d.businessImpact.toLocaleString()}/day<br/>
-                    <strong>Avg Resolve Time:</strong> ${
-                      d.avgResolveTime
-                    } hours<br/>
-                    <strong>Total Exposure:</strong> $${Math.round(
-                      (d.businessImpact * d.avgResolveTime) / 24
-                    ).toLocaleString()}
-                `
-        )
-        .style("left", event.pageX + 10 + "px")
-        .style("top", event.pageY - 10 + "px");
+        .style("left", position.left + "px")
+        .style("top", position.top + "px");
     })
     .on("mouseout", function () {
       d3.select(this)
@@ -386,6 +380,20 @@ function createChart(data) {
         .attr("stroke-width", 2);
 
       tooltip.style("opacity", 0);
+    });
+
+  // Add global mouseleave handler to chart container to hide tooltip
+  d3.select("#chart")
+    .on("mouseleave", function() {
+      tooltip.style("opacity", 0);
+      // Reset all bubbles to default state
+      g.selectAll(".bubble")
+        .attr("opacity", (d) =>
+          filteredCategories.size === 0 || filteredCategories.has(d.category)
+            ? 0.7
+            : 0.2
+        )
+        .attr("stroke-width", 2);
     });
 
   createLegend(data);
@@ -458,19 +466,62 @@ window.updateSampleSize = updateSampleSize;
 
 // Initialize
 async function initializeApp() {
-  // Load real data first
-  await loadRealData();
-  
-  // Update button text based on data availability
-  const generateBtn = document.getElementById("generateBtn");
-  if (currentDataMode === "real") {
-    generateBtn.textContent = "Refresh Real Data";
-  } else {
-    generateBtn.textContent = "Generate New Synthetic Data";
+  try {
+    // Load configuration first
+    await loadConfiguration();
+    
+    // Load real data
+    await loadRealData();
+    
+    // Update UI with dynamic configuration (after data is loaded)
+    updateUIFromConfig();
+    
+    // Update button text based on data availability
+    const generateBtn = document.getElementById("generateBtn");
+    if (currentDataMode === "real") {
+      generateBtn.textContent = "Refresh Real Data";
+    } else {
+      generateBtn.textContent = "Generate New Synthetic Data";
+    }
+    
+    // Generate initial visualization
+    generateData();
+  } catch (error) {
+    console.error('Failed to initialize app:', error);
+    alert('Failed to load configuration. Please check config.json file.');
   }
+}
+
+// Update UI elements from configuration
+function updateUIFromConfig() {
+  // Update title
+  document.querySelector('h1').textContent = config.ui.title;
   
-  // Generate initial visualization
-  generateData();
+  // Update info panel with dynamic category count
+  const actualCategoryCount = realData && realData.Summary 
+    ? new Set(realData.Summary.map(item => item.category).filter(Boolean)).size
+    : config.dataSource.totalCategories;
+    
+  const infoPanel = document.querySelector('.info-panel');
+  infoPanel.innerHTML = `
+    <strong>Data Source:</strong> ${config.dataSource.description} (${actualCategoryCount} categories analyzed)
+    <br><strong>Visualization:</strong> Interactive bubble chart showing business impact vs resolution time
+    <br><strong>Methodology:</strong> ${config.ui.methodology}
+  `;
+  
+  // Update severity legend with dynamic values
+  const severityLegend = document.querySelector('.severity-legend');
+  severityLegend.innerHTML = '';
+  
+  config.severityTiers.forEach(tier => {
+    const severityItem = document.createElement('div');
+    severityItem.className = 'severity-item';
+    severityItem.innerHTML = `
+      <div style="width: 12px; height: 12px; background: ${config.chart.colors.severity[tier.severity]}; border-radius: 50%;"></div>
+      <span>${tier.severity} Impact ($${tier.dailyImpact.toLocaleString()}/day)</span>
+    `;
+    severityLegend.appendChild(severityItem);
+  });
 }
 
 // Start the app
