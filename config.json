@@ -1,0 +1,87 @@
+{
+  "chart": {
+    "margin": { "top": 60, "right": 80, "bottom": 80, "left": 120 },
+    "width": 1200,
+    "height": 700,
+    "colors": {
+      "scheme": "schemeSet3",
+      "severity": {
+        "High": "#dc3545",
+        "Medium": "#ffc107",
+        "Low": "#28a745"
+      }
+    }
+  },
+  "dataSource": {
+    "fileName": "fake_itsm_tickets_6k.csv",
+    "description": "Real ITSM tickets data from CSV",
+    "totalCategories": 264
+  },
+  "severityTiers": [
+    { "severity": "Low", "dailyImpact": 200, "probability": 0.6 },
+    { "severity": "Medium", "dailyImpact": 1000, "probability": 0.3 },
+    { "severity": "High", "dailyImpact": 5000, "probability": 0.1 }
+  ],
+  "issuesDistribution": {
+    "min": 1,
+    "max": 8099,
+    "mean": 467.72,
+    "median": 62,
+    "std": 1029.89,
+    "percentiles": {
+      "10": 1.6,
+      "25": 7,
+      "50": 62,
+      "75": 330,
+      "90": 1612.6,
+      "95": 2735,
+      "99": 4381.88
+    }
+  },
+  "defaultCategories": [
+    "Software Service",
+    "Hardware",
+    "Network Services",
+    "Security Services",
+    "Email Services",
+    "Server Services",
+    "Login Issue",
+    "SAP",
+    "Data Services",
+    "Mobile Services",
+    "Account Management",
+    "Change Request",
+    "DevOps Automation",
+    "LM Admin Service Desk",
+    "LM InfoWeb Helpdesk",
+    "Hardware Asset Allocation",
+    "Telephony",
+    "Others",
+    "PMS",
+    "Corporate Support",
+    "AAAS Services",
+    "ACCOPS",
+    "Concur Concerns",
+    "Darwin Box Concern",
+    "FMS Support",
+    "LLM Foundry",
+    "LM Back Up and Restore",
+    "LM CCA",
+    "LM Common Request",
+    "LM Computers",
+    "LM Hybrid Working",
+    "LM ISMS Incident",
+    "LM Onboarding",
+    "LM Printer and Scanner",
+    "Prohance",
+    "S/4 HANA",
+    "Soc",
+    "Springer Nature Bflux",
+    "TechSol",
+    "WFH"
+  ],
+  "ui": {
+    "title": "Service Desk Impact Analysis - CSV Data",
+    "methodology": "Impact tiers based on severity levels with configurable daily impact rates"
+  }
+}
