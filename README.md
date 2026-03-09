@@ -148,3 +148,5 @@ The application processes ITSM ticket data with the following key fields:
 - **Responsive Design**: Dynamic chart sizing and mobile-friendly
 - **Memory Efficient**: Selective data loading and filtering
 - **Fast Rendering**: Optimized D3.js chart updates and interactions
+---
+> **This is Demo. contains no confidential data/IP**
